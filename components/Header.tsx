@@ -1,6 +1,9 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 export default function Header() {
+  const router = useRouter();
   // Layout constants
   const CONTAINER_WIDTH = 'w-[1200px]';
   const HEADER_HEIGHT = 'h-[75px]';
@@ -25,7 +28,7 @@ export default function Header() {
       {/* AudioTrace name - midway left */}
       <div 
         className={`${AUDIOTRACE_CLASSES} cursor-pointer`}
-        onClick={() => window.location.reload()}
+        onClick={() => router.push('/')}
       >
         AudioTrace
       </div>

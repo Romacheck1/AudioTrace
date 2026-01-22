@@ -4,6 +4,10 @@ Hello! This project / Web Service is dedicated to every incomplete full-stack we
 
 SoundTrace is a web service that tracks various forms of audio like Songs / Podcasts / Streams / Audio Books all in one spot.
 
+## Version 0.2
+
+Added a fully functional content grid with category cards! Each card represents a different content type (Songs, Podcasts, Audiobooks, etc.) and displays real data from our PostgreSQL database. The Songs card now shows actual song information with album art, titles, artists, and durations. Cards can be selected (with a cool neon border effect), swapped around, or removed. There's also a search bar that routes to a search results page, and clicking on songs takes you to a detailed info page with breadcrumbs, action buttons, and related songs. The whole thing has this retro-futuristic 80s vibe with neon accents and smooth interactions.
+
 ## Version 0.1
 
 Simply contains a header, a footer, and the boxes of future content areas.
@@ -18,6 +22,10 @@ What makes this project the grand culmination of all my test learning services i
 - CSS Tailwind
 - JavaScript
 - TypeScript
+
+### Backend & Database
+- PostgreSQL
+- Next.js API Routes
 
 ### Dev Ops
 - Render

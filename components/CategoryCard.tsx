@@ -3,6 +3,17 @@
 import CategoryHeader from './CategoryHeader';
 import CategoryList from './CategoryList';
 
+interface Song {
+  id: number;
+  title: string;
+  artist: string;
+  album: string | null;
+  image_url: string | null;
+  popularity: number | null;
+  duration_ms: number | null;
+  genre: string | null;
+}
+
 interface CategoryCardProps {
   categoryName: string;
   categoryIndex: number;
@@ -11,6 +22,7 @@ interface CategoryCardProps {
   isSelected: boolean;
   onClick: () => void;
   onRemove: () => void;
+  songs?: Song[];
 }
 
 // 80s neon colors for each card - only computed when needed
@@ -29,7 +41,7 @@ const getNeonColor = (index: number) => {
   return colors[index % colors.length];
 };
 
-export default function CategoryCard({ categoryName, categoryIndex, selectedTime, onTimeSelect, isSelected, onClick, onRemove }: CategoryCardProps) {
+export default function CategoryCard({ categoryName, categoryIndex, selectedTime, onTimeSelect, isSelected, onClick, onRemove, songs = [] }: CategoryCardProps) {
   const neonColor = isSelected ? getNeonColor(categoryIndex) : null;
 
   return (
@@ -65,7 +77,7 @@ export default function CategoryCard({ categoryName, categoryIndex, selectedTime
         selectedTime={selectedTime}
         onTimeSelect={onTimeSelect}
       />
-      <CategoryList itemCount={5} />
+      <CategoryList songs={songs} isCardSelected={isSelected} />
     </div>
   );
 }

@@ -1,7 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CategoryCard from './CategoryCard';
+
+interface Song {
+  id: number;
+  title: string;
+  artist: string;
+  album: string | null;
+  image_url: string | null;
+  popularity: number | null;
+  duration_ms: number | null;
+  genre: string | null;
+}
 
 export default function ContentGrid() {
   const CONTAINER_WIDTH = 'w-[1200px]';
@@ -15,6 +26,28 @@ export default function ContentGrid() {
   const [selectedCards, setSelectedCards] = useState<number[]>([]);
   const [categoryOrder, setCategoryOrder] = useState<number[]>([0, 1, 2, 3, 4, 5, 6, 7, 8]);
   const [hiddenCards, setHiddenCards] = useState<Set<number>>(new Set());
+  const [songs, setSongs] = useState<Song[]>([]);
+
+  // Fetch songs from API
+  useEffect(() => {
+    const fetchSongs = async () => {
+      try {
+        const response = await fetch('/api/songs');
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setSongs(data);
+        } else if (data.error) {
+          console.error('API error:', data.error);
+          setSongs([]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch songs:', error);
+        setSongs([]);
+      }
+    };
+
+    fetchSongs();
+  }, []);
 
   const handleTimeSelect = (originalIndex: number, time: string) => {
     setSelectedTimes({ ...selectedTimes, [originalIndex]: time });
@@ -96,6 +129,7 @@ export default function ContentGrid() {
                     isSelected={isSelected}
                     onClick={() => handleCardClick(originalPosition)}
                     onRemove={() => handleRemove(originalPosition)}
+                    songs={originalIndex === 0 ? songs : []} // Only pass songs to "Songs" category (index 0)
                   />
                 );
               })}
