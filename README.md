@@ -12,24 +12,62 @@ This is a big one! We now have ALL NINE content cards fully functional - Songs, 
 
 Added a fully functional content grid with category cards! Each card represents a different content type (Songs, Podcasts, Audiobooks, etc.) and displays real data from our PostgreSQL database. The Songs card now shows actual song information with album art, titles, artists, and durations. Cards can be selected (with a cool neon border effect), swapped around, or removed. There's also a search bar that routes to a search results page, and clicking on songs takes you to a detailed info page with breadcrumbs, action buttons, and related songs. The whole thing has this retro-futuristic 80s vibe with neon accents and smooth interactions.
 
-## Version 0.1
-
-Simply contains a header, a footer, and the boxes of future content areas.
-
-## About This Project
-
-What makes this project the grand culmination of all my test learning services is that I am now confident in my ability - to develop a PROFESSIONAL web service that contains the same structure of real life code - for example I have greatly improved on my understanding of core concepts like responsivness and flexibility. On top of that I have learned to store my code in a clearer structure and to document for improved readability.
-
-## Technologies Used
-
-### Basic Front End Combination
-- CSS Tailwind
-- JavaScript
+**Frontend:**
+- Next.js 16 (App Router)
+- React 19
 - TypeScript
+- Tailwind CSS
 
-### Backend & Database
-- PostgreSQL
+**Backend:**
 - Next.js API Routes
+- PostgreSQL
+- Connection pooling with SSL support
 
-### Dev Ops
-- Render
+**Deployment:**
+- Render (Hosting)
+- PostgreSQL (Database)
+
+### Project Structure
+
+```
+soundtrace/
+├── app/                    # Next.js App Router pages
+│   ├── api/               # Backend API routes
+│   ├── [content-type]/    # Dynamic info pages
+│   ├── admin/             # Admin panel
+│   └── search/            # Search results
+├── components/            # React components
+│   ├── info/              # Info page components
+│   └── [shared components]
+├── lib/                   # Utilities
+│   └── db.ts              # Database connection
+└── public/                # Static assets
+```
+
+### Getting Started
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Set up environment variables:
+   - `DATABASE_URL` - PostgreSQL connection string
+   - `NEXT_PUBLIC_SITE_URL` - Your site URL
+4. Run development server: `npm run dev`
+5. Build for production: `npm run build`
+
+### Environment Variables
+
+```env
+DATABASE_URL=postgresql://user:password@host:port/database
+NEXT_PUBLIC_SITE_URL=https://your-domain.com
+```
+
+### API Routes
+
+The application includes RESTful API routes for all content types:
+- `GET /api/[type]` - Fetch all items
+- `POST /api/[type]/update` - Update/create items
+- `GET /api/[type]/migrate` - Database migrations
+
+### License
+
+Private project - All rights reserved

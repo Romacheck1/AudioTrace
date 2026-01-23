@@ -1,9 +1,6 @@
 import { Pool, PoolConfig } from 'pg';
 
-// Check for database URL in multiple possible environment variable names
-// Different hosting platforms use different names
 const getDatabaseUrl = (): string | undefined => {
-  // Priority order: Check common environment variable names
   return process.env.DATABASE_URL || 
          process.env.POSTGRES_URL || 
          process.env.POSTGRES_CONNECTION_STRING ||
@@ -14,12 +11,7 @@ const getDatabaseUrl = (): string | undefined => {
 };
 
 const databaseUrl = getDatabaseUrl();
-
-// Only log errors at runtime, not during build
 const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
-if (!databaseUrl && !isBuildTime) {
-  console.warn('⚠️ Database URL not set');
-}
 
 // Determine environment
 const isProduction = process.env.NODE_ENV === 'production';
@@ -37,15 +29,10 @@ if (databaseUrl) {
     const urlParts = databaseUrl.split('@');
     if (urlParts.length > 1) {
       connectionHost = urlParts[1].split('/')[0];
-       // Internal connections on Render:
-      // - Have hostnames like "dpg-xxxxx-a" (no .render.com)
-      // - Or contain ".internal" 
-      // External connections have ".render.com" in hostname
       if (isRender) {
         isInternalConnection = connectionHost.includes('.internal') || 
                               !connectionHost.includes('.render.com');
       } else {
-        // For other platforms, check for internal indicators
         isInternalConnection = connectionHost.includes('.internal') || 
                               connectionHost.includes('localhost') ||
                               connectionHost.includes('127.0.0.1');
@@ -56,43 +43,24 @@ if (databaseUrl) {
   }
 }
 
-// Determine SSL configuration - FIXED for common hosting platforms
 let sslConfig: any = false;
 
 if (databaseUrl) {
   const url = databaseUrl.toLowerCase();
   
-  // Priority 1: Check connection string for explicit SSL requirements
   if (url.includes('sslmode=require')) {
     sslConfig = { rejectUnauthorized: false };
-  } 
-  // Priority 2: Render internal connections (no SSL needed)
-  else if (isRender && isInternalConnection) {
+  } else if (isRender && isInternalConnection) {
+    sslConfig = false;
+  } else if (isHosted && !isInternalConnection) {
+    sslConfig = { rejectUnauthorized: false };
+  } else if (isVercel || isRailway) {
+    sslConfig = { rejectUnauthorized: false };
+  } else if (isProduction) {
+    sslConfig = { rejectUnauthorized: false };
+  } else {
     sslConfig = false;
   }
-  // Priority 3: External connections on hosted platforms (SSL required)
-  else if (isHosted && !isInternalConnection) {
-    sslConfig = { rejectUnauthorized: false };
-  }
-  // Priority 4: Vercel/Railway always need SSL
-  else if (isVercel || isRailway) {
-    sslConfig = { rejectUnauthorized: false };
-  }
-  // Priority 5: Production but unknown platform - try SSL
-  else if (isProduction) {
-    sslConfig = { rejectUnauthorized: false };
-  }
-  // Default: Local development - no SSL
-  else {
-    sslConfig = false;
-  }
-  
-  console.log('SSL Configuration:', {
-    sslEnabled: sslConfig !== false,
-    isInternal: isInternalConnection,
-    platform: isRender ? 'Render' : isVercel ? 'Vercel' : isRailway ? 'Railway' : 'Unknown',
-    host: connectionHost.substring(0, 50)
-  });
 }
 
 // Create pool only if database URL exists
