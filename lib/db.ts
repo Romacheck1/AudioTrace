@@ -80,16 +80,16 @@ if (databaseUrl) {
   pool = new Pool(poolConfig);
 
   pool.on('error', (err: any) => {
-    console.error('❌ Pool error:', err.message);
+    console.error('Pool error:', err.message);
   });
 
   if (isHosted && !isBuildTime) {
     pool.query('SELECT NOW()')
-      .then((result) => {
-        console.log('✅ Database connection successful');
+      .then(() => {
+        console.log('Database connection successful');
       })
       .catch((err: any) => {
-        console.error('❌ Database connection failed:', err.message);
+        console.error('Database connection failed:', err.message);
       });
   }
 }
