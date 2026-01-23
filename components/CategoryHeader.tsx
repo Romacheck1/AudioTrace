@@ -19,7 +19,10 @@ export default function CategoryHeader({ categoryName, categoryIndex, selectedTi
       
       <div className="relative">
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
           className="flex items-center justify-center w-8 h-8 hover:bg-gray-400 rounded transition-colors"
         >
           <svg

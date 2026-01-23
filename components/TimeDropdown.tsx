@@ -13,7 +13,10 @@ export default function TimeDropdown({ selectedTime, onSelect }: TimeDropdownPro
       {timeOptions.map((option) => (
         <button
           key={option}
-          onClick={() => onSelect(option)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(option);
+          }}
           className={`w-full text-left px-4 py-2 hover:bg-gray-100 first:rounded-t-lg last:rounded-b-lg ${
             selectedTime === option ? 'bg-gray-200 font-semibold' : ''
           }`}

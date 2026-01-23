@@ -3,15 +3,12 @@
 import CategoryHeader from './CategoryHeader';
 import CategoryList from './CategoryList';
 
-interface Song {
+interface MediaItem {
   id: number;
   title: string;
   artist: string;
-  album: string | null;
   image_url: string | null;
-  popularity: number | null;
   duration_ms: number | null;
-  genre: string | null;
 }
 
 interface CategoryCardProps {
@@ -22,7 +19,7 @@ interface CategoryCardProps {
   isSelected: boolean;
   onClick: () => void;
   onRemove: () => void;
-  songs?: Song[];
+  songs?: MediaItem[];
 }
 
 // 80s neon colors for each card - only computed when needed
@@ -46,15 +43,21 @@ export default function CategoryCard({ categoryName, categoryIndex, selectedTime
 
   return (
     <div 
-      className={`bg-gray-200 rounded-lg h-96 flex-1 flex flex-col p-2 relative cursor-pointer transition-all ${
+      className={`bg-gray-200 rounded-lg flex-1 flex flex-col p-2 relative cursor-pointer transition-all overflow-hidden ${
         isSelected ? 'scale-[1.02]' : ''
       }`}
       onClick={onClick}
-      style={isSelected && neonColor ? {
-        border: `2px solid ${neonColor.border}`,
-        boxShadow: `0 0 10px ${neonColor.glow}, inset 0 0 10px ${neonColor.glow}`,
-      } : {
-        border: '2px solid transparent',
+      style={{
+        height: '384px',
+        maxHeight: '384px',
+        minHeight: '384px',
+        flexShrink: 0,
+        ...(isSelected && neonColor ? {
+          border: `2px solid ${neonColor.border}`,
+          boxShadow: `0 0 10px ${neonColor.glow}, inset 0 0 10px ${neonColor.glow}`,
+        } : {
+          border: '2px solid transparent',
+        })
       }}
     >
       {/* X button - top left, subtle */}
@@ -77,7 +80,7 @@ export default function CategoryCard({ categoryName, categoryIndex, selectedTime
         selectedTime={selectedTime}
         onTimeSelect={onTimeSelect}
       />
-      <CategoryList songs={songs} isCardSelected={isSelected} />
+      <CategoryList songs={songs} isCardSelected={isSelected} categoryIndex={categoryIndex} />
     </div>
   );
 }
