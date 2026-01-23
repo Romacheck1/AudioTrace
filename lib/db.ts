@@ -1,9 +1,24 @@
 import { Pool, PoolConfig } from 'pg';
 
-// Check if DATABASE_URL is set
-if (!process.env.DATABASE_URL) {
-  console.error('❌ DATABASE_URL environment variable is not set!');
-  console.error('Available env vars:', Object.keys(process.env).filter(k => k.includes('DATABASE') || k.includes('DB')));
+// Check for database URL in multiple possible environment variable names
+// Different hosting platforms use different names
+const getDatabaseUrl = (): string | undefined => {
+  // Priority order: Check common environment variable names
+  return process.env.DATABASE_URL || 
+         process.env.POSTGRES_URL || 
+         process.env.POSTGRES_CONNECTION_STRING ||
+         process.env.POSTGRES_INTERNAL_URL ||
+         process.env.POSTGRES_EXTERNAL_URL ||
+         process.env.DB_URL ||
+         process.env.DATABASE_CONNECTION_STRING;
+};
+
+const databaseUrl = getDatabaseUrl();
+
+// Only log errors at runtime, not during build
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build';
+if (!databaseUrl && !isBuildTime) {
+  console.warn('⚠️ Database URL not set');
 }
 
 // Determine environment
@@ -17,9 +32,9 @@ const isHosted = isRender || isVercel || isRailway || isProduction;
 let isInternalConnection = false;
 let connectionHost = '';
 
-if (process.env.DATABASE_URL) {
+if (databaseUrl) {
   try {
-    const urlParts = process.env.DATABASE_URL.split('@');
+    const urlParts = databaseUrl.split('@');
     if (urlParts.length > 1) {
       connectionHost = urlParts[1].split('/')[0];
        // Internal connections on Render:
@@ -44,8 +59,8 @@ if (process.env.DATABASE_URL) {
 // Determine SSL configuration - FIXED for common hosting platforms
 let sslConfig: any = false;
 
-if (process.env.DATABASE_URL) {
-  const url = process.env.DATABASE_URL.toLowerCase();
+if (databaseUrl) {
+  const url = databaseUrl.toLowerCase();
   
   // Priority 1: Check connection string for explicit SSL requirements
   if (url.includes('sslmode=require')) {
@@ -80,42 +95,36 @@ if (process.env.DATABASE_URL) {
   });
 }
 
-// Create pool configuration
-const poolConfig: PoolConfig = {
-  connectionString: process.env.DATABASE_URL,
-  ssl: sslConfig,
-  max: 10, // Reduced for better reliability
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 30000, // Increased timeout
-  // Add keep-alive settings
-  keepAlive: true,
-  keepAliveInitialDelayMillis: 10000,
-};
+// Create pool only if database URL exists
+let pool: Pool | null = null;
 
-// Create the connection pool
-const pool = new Pool(poolConfig);
+if (databaseUrl) {
+  const poolConfig: PoolConfig = {
+    connectionString: databaseUrl,
+    ssl: sslConfig,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 30000,
+    keepAlive: true,
+    keepAliveInitialDelayMillis: 10000,
+  };
 
-// Handle pool errors gracefully
-pool.on('error', (err: any) => {
-  console.error('❌ Pool error:', err.message);
-  // Don't exit - let Next.js handle reconnection
-});
+  pool = new Pool(poolConfig);
 
-// Test connection on startup and log configuration
-if (isHosted && process.env.DATABASE_URL) {
-  pool.query('SELECT NOW()')
-    .then((result) => {
-      console.log('✅ Database connection test successful');
-      console.log('Database time:', result.rows[0].now);
-    })
-    .catch((err: any) => {
-      console.error('❌ Database connection test failed');
-      console.error('Error:', err.message);
-      console.error('SSL Config:', sslConfig);
-      console.error('Is Internal:', isInternalConnection);
-      console.error('Platform:', isRender ? 'Render' : isVercel ? 'Vercel' : isRailway ? 'Railway' : 'Unknown');
-    });
+  pool.on('error', (err: any) => {
+    console.error('❌ Pool error:', err.message);
+  });
+
+  if (isHosted && !isBuildTime) {
+    pool.query('SELECT NOW()')
+      .then((result) => {
+        console.log('✅ Database connection successful');
+      })
+      .catch((err: any) => {
+        console.error('❌ Database connection failed:', err.message);
+      });
+  }
 }
 
-export default pool;
+export default pool as Pool;
 
