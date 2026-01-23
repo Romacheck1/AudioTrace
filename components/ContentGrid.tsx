@@ -350,7 +350,7 @@ export default function ContentGrid() {
   const visibleOrder = categoryOrder.filter(index => !hiddenCards.has(index));
 
   return (
-    <div className={`hidden xl:block ${CONTAINER_WIDTH} mx-auto ${CONTENT_TOP_MARGIN} flex flex-col relative`}>
+    <div className={`hidden lg:block ${CONTAINER_WIDTH} mx-auto ${CONTENT_TOP_MARGIN} flex flex-col relative`}>
       {/* Reset button - positioned on the left */}
       <button
         onClick={handleReset}

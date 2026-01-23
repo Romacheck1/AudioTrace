@@ -19,7 +19,7 @@ export default function Header() {
   const CIRCLES_CONTAINER_CLASSES = 'absolute bottom-0 right-0 z-20 translate-x-1/2 translate-y-1/2';
 
   return (
-    <div className={`hidden xl:block ${CONTAINER_WIDTH} ${HEADER_HEIGHT} mx-auto bg-white border border-black ${HEADER_TOP_MARGIN} relative overflow-hidden flex items-center justify-between ${HEADER_PADDING}`}>
+    <div className={`hidden lg:block ${CONTAINER_WIDTH} ${HEADER_HEIGHT} mx-auto bg-white border border-black ${HEADER_TOP_MARGIN} relative overflow-hidden flex items-center justify-between ${HEADER_PADDING}`}>
       {/* Diagonal stripes - top left */}
       <div className={`${STRIPE_BASE_CLASSES} bg-red-500 translate-x-15`}></div>
       <div className={`${STRIPE_BASE_CLASSES} bg-blue-500 translate-x-30`}></div>

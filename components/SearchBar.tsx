@@ -15,7 +15,7 @@ export default function SearchBar() {
   };
 
   return (
-    <div className="hidden xl:block w-[1200px] mx-auto mt-8">
+    <div className="hidden lg:block w-[1200px] mx-auto mt-8">
       <form onSubmit={handleSubmit} className="relative">
         <input
           type="text"

@@ -5,9 +5,48 @@ import ActionButtons from '@/components/info/ActionButtons';
 import PodcastMainSection from '@/components/info/PodcastMainSection';
 import PodcastInformationSection from '@/components/info/PodcastInformationSection';
 import RelatedPodcasts from '@/components/info/RelatedPodcasts';
+import type { Metadata } from 'next';
 
 interface PodcastPageProps {
   params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: PodcastPageProps): Promise<Metadata> {
+  const { id } = await params;
+  
+  try {
+    const result = await pool.query('SELECT * FROM podcasts WHERE id = $1', [id]);
+    const podcast = result.rows[0];
+    
+    if (!podcast) {
+      return {
+        title: 'Podcast Not Found',
+        description: 'The requested podcast could not be found.',
+      };
+    }
+    
+    return {
+      title: `${podcast.title} by ${podcast.artist}`,
+      description: podcast.description || `Listen to ${podcast.title} by ${podcast.artist}. ${podcast.genre ? `Genre: ${podcast.genre}.` : ''}`,
+      openGraph: {
+        title: `${podcast.title} by ${podcast.artist}`,
+        description: podcast.description || `Listen to ${podcast.title} by ${podcast.artist}`,
+        images: podcast.image_url ? [podcast.image_url] : [],
+        type: 'music.song',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${podcast.title} by ${podcast.artist}`,
+        description: podcast.description || `Listen to ${podcast.title} by ${podcast.artist}`,
+        images: podcast.image_url ? [podcast.image_url] : [],
+      },
+    };
+  } catch (error) {
+    return {
+      title: 'Podcast',
+      description: 'Podcast information',
+    };
+  }
 }
 
 export default async function PodcastPage({ params }: PodcastPageProps) {

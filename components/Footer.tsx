@@ -17,7 +17,7 @@ export default function Footer() {
   const FOOTER_PADDING = 'px-6';
 
   return (
-    <div className={`hidden xl:block ${CONTAINER_WIDTH} ${FOOTER_HEIGHT} mx-auto bg-white border border-black ${FOOTER_TOP_MARGIN} ${FOOTER_BOTTOM_MARGIN} relative overflow-hidden flex items-center justify-between ${FOOTER_PADDING}`}>
+    <div className={`hidden lg:block ${CONTAINER_WIDTH} ${FOOTER_HEIGHT} mx-auto bg-white border border-black ${FOOTER_TOP_MARGIN} ${FOOTER_BOTTOM_MARGIN} relative overflow-hidden flex items-center justify-between ${FOOTER_PADDING}`}>
       {/* Left side semi-circles */}
       <div className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center translate-x-[54px]">
         {[1, 2, 3].map((index) => (
