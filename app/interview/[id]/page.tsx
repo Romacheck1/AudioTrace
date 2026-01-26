@@ -12,6 +12,18 @@ interface InterviewPageProps {
 
 export default async function InterviewPage({ params }: InterviewPageProps) {
   const { id } = await params;
+  
+  if (!pool) {
+    return (
+      <div className="px-10">
+        <Header />
+        <div className="w-[1200px] mx-auto mt-16">
+          <p className="text-gray-600">Database connection unavailable</p>
+        </div>
+      </div>
+    );
+  }
+
   const result = await pool.query('SELECT * FROM interviews WHERE id = $1', [id]);
   const interview = result.rows[0];
 

@@ -15,6 +15,13 @@ export async function generateMetadata({ params }: PodcastPageProps): Promise<Me
   const { id } = await params;
   
   try {
+    if (!pool) {
+      return {
+        title: 'Podcast',
+        description: 'Podcast information',
+      };
+    }
+    
     const result = await pool.query('SELECT * FROM podcasts WHERE id = $1', [id]);
     const podcast = result.rows[0];
     
@@ -52,6 +59,17 @@ export async function generateMetadata({ params }: PodcastPageProps): Promise<Me
 export default async function PodcastPage({ params }: PodcastPageProps) {
   const { id } = await params;
   
+  if (!pool) {
+    return (
+      <div className="px-10">
+        <Header />
+        <div className="w-[1200px] mx-auto mt-16">
+          <p className="text-gray-600">Database connection unavailable</p>
+        </div>
+      </div>
+    );
+  }
+
   // Query database directly
   const result = await pool.query('SELECT * FROM podcasts WHERE id = $1', [id]);
   const podcast = result.rows[0];

@@ -32,19 +32,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { name: 'interviews', path: '/interview' },
   ];
 
-  try {
-    for (const table of tables) {
-      const result = await pool.query(`SELECT id FROM ${table.name} ORDER BY id`);
-      const items = result.rows.map((row: { id: number }) => ({
-        url: `${baseUrl}${table.path}/${row.id}`,
-        lastModified: new Date(),
-        changeFrequency: 'weekly' as const,
-        priority: 0.7,
-      }));
-      routes.push(...items);
+  if (pool) {
+    try {
+      for (const table of tables) {
+        const result = await pool.query(`SELECT id FROM ${table.name} ORDER BY id`);
+        const items = result.rows.map((row: { id: number }) => ({
+          url: `${baseUrl}${table.path}/${row.id}`,
+          lastModified: new Date(),
+          changeFrequency: 'weekly' as const,
+          priority: 0.7,
+        }));
+        routes.push(...items);
+      }
+    } catch (error) {
+      console.error('Error generating sitemap:', error);
     }
-  } catch (error) {
-    console.error('Error generating sitemap:', error);
   }
 
   return routes;

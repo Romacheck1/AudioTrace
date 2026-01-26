@@ -12,6 +12,18 @@ interface RadioPageProps {
 
 export default async function RadioPage({ params }: RadioPageProps) {
   const { id } = await params;
+  
+  if (!pool) {
+    return (
+      <div className="px-10">
+        <Header />
+        <div className="w-[1200px] mx-auto mt-16">
+          <p className="text-gray-600">Database connection unavailable</p>
+        </div>
+      </div>
+    );
+  }
+
   const result = await pool.query('SELECT * FROM radio WHERE id = $1', [id]);
   const radio = result.rows[0];
 

@@ -33,15 +33,17 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
 
   const allNames: string[] = [];
 
-  try {
-    // Query each table and collect all titles
-    for (const table of tables) {
-      const result = await pool.query(`SELECT title FROM ${table} ORDER BY title`);
-      const titles = result.rows.map((row: { title: string }) => row.title);
-      allNames.push(...titles);
+  if (pool) {
+    try {
+      // Query each table and collect all titles
+      for (const table of tables) {
+        const result = await pool.query(`SELECT title FROM ${table} ORDER BY title`);
+        const titles = result.rows.map((row: { title: string }) => row.title);
+        allNames.push(...titles);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-  } catch (error) {
-    console.error('Error fetching data:', error);
   }
 
   // Sort all names alphabetically

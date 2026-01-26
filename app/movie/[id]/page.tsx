@@ -13,6 +13,17 @@ interface MoviePageProps {
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params;
   
+  if (!pool) {
+    return (
+      <div className="px-10">
+        <Header />
+        <div className="w-[1200px] mx-auto mt-16">
+          <p className="text-gray-600">Database connection unavailable</p>
+        </div>
+      </div>
+    );
+  }
+
   // Query database directly
   const result = await pool.query('SELECT * FROM movies WHERE id = $1', [id]);
   const movie = result.rows[0];
