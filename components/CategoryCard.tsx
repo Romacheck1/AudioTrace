@@ -20,6 +20,7 @@ interface CategoryCardProps {
   onClick: () => void;
   onRemove: () => void;
   songs?: MediaItem[];
+  showTimestamp?: boolean;
 }
 
 // 80s neon colors for each card - only computed when needed
@@ -38,7 +39,7 @@ const getNeonColor = (index: number) => {
   return colors[index % colors.length];
 };
 
-export default function CategoryCard({ categoryName, categoryIndex, selectedTime, onTimeSelect, isSelected, onClick, onRemove, songs = [] }: CategoryCardProps) {
+export default function CategoryCard({ categoryName, categoryIndex, selectedTime, onTimeSelect, isSelected, onClick, onRemove, songs = [], showTimestamp = true }: CategoryCardProps) {
   const neonColor = isSelected ? getNeonColor(categoryIndex) : null;
 
   return (
@@ -79,6 +80,7 @@ export default function CategoryCard({ categoryName, categoryIndex, selectedTime
         categoryIndex={categoryIndex}
         selectedTime={selectedTime}
         onTimeSelect={onTimeSelect}
+        showTimestamp={showTimestamp}
       />
       <CategoryList songs={songs} isCardSelected={isSelected} categoryIndex={categoryIndex} />
     </div>

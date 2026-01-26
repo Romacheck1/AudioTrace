@@ -19,6 +19,9 @@ interface CategoryListProps {
 export default function CategoryList({ songs = [], isCardSelected = false, categoryIndex = 0 }: CategoryListProps) {
   const router = useRouter();
 
+  // Show duration only for Songs (0), Movies (3), and Interviews (8)
+  const showDuration = categoryIndex === 0 || categoryIndex === 3 || categoryIndex === 8;
+
   // Format duration from milliseconds to MM:SS
   const formatDuration = (ms: number | null) => {
     if (!ms) return '0:00';
@@ -94,10 +97,12 @@ export default function CategoryList({ songs = [], isCardSelected = false, categ
                 </div>
               </div>
 
-              {/* Duration */}
-              <div className="text-xs text-gray-500 px-2">
-                {mediaItem ? formatDuration(mediaItem.duration_ms) : '3:45'}
-              </div>
+              {/* Duration - only show for Songs, Movies, and Interviews */}
+              {showDuration && (
+                <div className="text-xs text-gray-500 px-2">
+                  {mediaItem ? formatDuration(mediaItem.duration_ms) : '3:45'}
+                </div>
+              )}
 
               {/* More Options (hidden by default, shown on hover) */}
               <div className="w-6 h-6 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">

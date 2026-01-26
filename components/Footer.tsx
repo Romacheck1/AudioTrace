@@ -1,11 +1,22 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 export default function Footer() {
+  const router = useRouter();
+  
   // Colors for semi-circles
   const colors = ['red', 'blue', 'yellow'];
   
-  // Navigation labels
-  const navLabels = ['About', 'F.A.Q', 'Socials', 'Legal', 'Roadmap', 'Updates'];
+  // Navigation labels with routes
+  const navItems = [
+    { label: 'About', route: '/about' },
+    { label: 'F.A.Q', route: '/faq' },
+    { label: 'Socials', route: '/socials' },
+    { label: 'Legal', route: '/legal' },
+    { label: 'Roadmap', route: '/roadmap' },
+    { label: 'Updates', route: '/updates' }
+  ];
   
   // Layout constants
   const CONTAINER_WIDTH = 'w-[1200px]';
@@ -56,16 +67,16 @@ export default function Footer() {
       
       {/* Center navigation pills */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3">
-        {navLabels.map((label, index) => {
+        {navItems.map((item, index) => {
           const pillColors = ['red', 'blue', 'yellow', 'red', 'blue', 'yellow'];
           const bgColor = pillColors[index] === 'red' ? 'bg-red-500 hover:bg-red-400' : pillColors[index] === 'blue' ? 'bg-blue-500 hover:bg-blue-400' : 'bg-yellow-500 hover:bg-yellow-400';
           return (
             <div
-              key={label}
-              onClick={() => window.location.reload()}
+              key={item.label}
+              onClick={() => router.push(item.route)}
               className={`px-6 py-1.5 rounded-full border border-black ${bgColor} text-white text-lg whitespace-nowrap transition-colors cursor-pointer`}
             >
-              {label}
+              {item.label}
             </div>
           );
         })}

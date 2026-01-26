@@ -126,6 +126,7 @@ export default function ContentGrid() {
           setSongs(data);
         } else if (data.error) {
           console.error('API error:', data.error);
+          console.error('Error details:', data.details || data.message);
           setSongs([]);
         }
       } catch (error) {
@@ -387,6 +388,9 @@ export default function ContentGrid() {
                 else if (originalIndex === 7) mediaItems = radio;
                 else if (originalIndex === 8) mediaItems = interviews;
                 
+                // Timestamps removed - time-based filtering doesn't make sense for these content types
+                const showTimestamp = false;
+                
                 return (
                   <CategoryCard
                     key={`${gridIndex}-${originalIndex}`}
@@ -398,6 +402,7 @@ export default function ContentGrid() {
                     onClick={() => handleCardClick(originalPosition)}
                     onRemove={() => handleRemove(originalPosition)}
                     songs={mediaItems} // Pass appropriate media items
+                    showTimestamp={showTimestamp}
                   />
                 );
               })}
