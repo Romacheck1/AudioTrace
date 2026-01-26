@@ -3,9 +3,9 @@ import pool from '@/lib/db';
 
 export async function POST() {
   try {
-    if (!process.env.DATABASE_URL) {
+    if (!pool) {
       return NextResponse.json(
-        { error: 'Database configuration error', message: 'DATABASE_URL environment variable is not set' },
+        { error: 'Database configuration error', message: 'Database connection is not available. Please set DATABASE_URL environment variable.' },
         { status: 500 }
       );
     }
