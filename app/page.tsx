@@ -22,9 +22,9 @@ export const metadata: Metadata = {
  */
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="page-container">
       <Header />
-      <main className="flex-1 py-6">
+      <main className="page-main">
         <ContentGrid />
       </main>
       <Footer />

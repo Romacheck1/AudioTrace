@@ -78,19 +78,19 @@ export default function ContentGrid() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6">
+    <div className="content-grid">
       {/* Heading */}
-      <div className="text-center mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+      <div className="content-grid-heading">
+        <h1 className="content-grid-title">
           Trending Top Ten Globally
         </h1>
       </div>
 
       {/* Cards - 2x2 Grid Layout */}
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Loading...</div>
+        <div className="content-grid-loading">Loading...</div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+        <div className="content-grid-container">
           {TRENDING_CARDS.map((card) => (
             <CategoryCard
               key={card.id}

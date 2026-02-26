@@ -21,8 +21,8 @@ export default function CategoryHeader({
   showTimestamp = false 
 }: CategoryHeaderProps) {
   return (
-    <div className="bg-gray-300 rounded-lg h-14 border border-gray-400 flex items-center justify-between px-4">
-      <span className="text-lg font-bold text-gray-900">{categoryName}</span>
+    <div className="category-header">
+      <span className="category-header-title">{categoryName}</span>
     </div>
   );
 }
