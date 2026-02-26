@@ -1,5 +1,4 @@
 import Header from '@/components/Header';
-import pool from '@/lib/db';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

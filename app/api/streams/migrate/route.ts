@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import pool from '@/lib/db';
 
 export async function POST() {
   try {
@@ -9,7 +8,6 @@ export async function POST() {
         { status: 500 }
       );
     }
-
     // Create streams table if it doesn't exist
     await pool.query(`
       CREATE TABLE IF NOT EXISTS streams (
@@ -38,4 +36,5 @@ export async function POST() {
     );
   }
 }
+
 

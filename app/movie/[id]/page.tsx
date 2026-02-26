@@ -1,5 +1,4 @@
 import Header from '@/components/Header';
-import pool from '@/lib/db';
 import Breadcrumb from '@/components/info/Breadcrumb';
 import ActionButtons from '@/components/info/ActionButtons';
 import MovieMainSection from '@/components/info/MovieMainSection';
