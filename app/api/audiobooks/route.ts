@@ -1,26 +1,16 @@
 import { NextResponse } from 'next/server';
+import { getPlaceholderData } from '@/lib/db';
 
+/**
+ * Audiobooks API Route
+ * 
+ * Returns mock audiobook data for frontend display.
+ * Simplified frontend-focused implementation.
+ */
 export async function GET() {
-  try {
-    if (!pool) {
-      return NextResponse.json(
-        { error: 'Database configuration error', message: 'Database connection is not available. Please set DATABASE_URL environment variable.' },
-        { status: 500 }
-      );
-    }
-
-    // Fetch from audiobooks table
-    const result = await pool.query(
-      'SELECT * FROM audiobooks ORDER BY popularity DESC LIMIT 10'
-    );
-    
-    return NextResponse.json(result.rows);
-  } catch (error: any) {
-    console.error('Database error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch audiobooks', details: error.message },
-      { status: 500 }
-    );
-  }
+  // Mock audiobook data
+  const audiobooks = getPlaceholderData('Audiobook', 10);
+  
+  return NextResponse.json(audiobooks);
 }
 

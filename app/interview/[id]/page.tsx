@@ -4,6 +4,7 @@ import ActionButtons from '@/components/info/ActionButtons';
 import InterviewMainSection from '@/components/info/InterviewMainSection';
 import InterviewInformationSection from '@/components/info/InterviewInformationSection';
 import RelatedInterviews from '@/components/info/RelatedInterviews';
+import { getPlaceholderItem, getPlaceholderRelated } from '@/lib/db';
 
 interface InterviewPageProps {
   params: Promise<{ id: string }>;
@@ -12,33 +13,9 @@ interface InterviewPageProps {
 export default async function InterviewPage({ params }: InterviewPageProps) {
   const { id } = await params;
   
-  if (!pool) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Database connection unavailable</p>
-        </div>
-      </div>
-    );
-  }
-
-  const result = await pool.query('SELECT * FROM interviews WHERE id = $1', [id]);
-  const interview = result.rows[0];
-
-  if (!interview) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Interview show not found</p>
-        </div>
-      </div>
-    );
-  }
-
-  const relatedResult = await pool.query('SELECT * FROM interviews WHERE genre = $1 AND id != $2 LIMIT 3', [interview.genre, id]);
-  const relatedInterviews = relatedResult.rows;
+  // Use placeholder data
+  const interview = getPlaceholderItem('Interview', id);
+  const relatedInterviews = getPlaceholderRelated('Interview', interview.genre || 'Sample Genre', parseInt(id), 3);
 
   return (
     <div className="px-10">

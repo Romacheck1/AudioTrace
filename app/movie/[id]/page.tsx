@@ -4,6 +4,7 @@ import ActionButtons from '@/components/info/ActionButtons';
 import MovieMainSection from '@/components/info/MovieMainSection';
 import MovieInformationSection from '@/components/info/MovieInformationSection';
 import RelatedMovies from '@/components/info/RelatedMovies';
+import { getPlaceholderItem, getPlaceholderRelated } from '@/lib/db';
 
 interface MoviePageProps {
   params: Promise<{ id: string }>;
@@ -12,38 +13,9 @@ interface MoviePageProps {
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params;
   
-  if (!pool) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Database connection unavailable</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Query database directly
-  const result = await pool.query('SELECT * FROM movies WHERE id = $1', [id]);
-  const movie = result.rows[0];
-
-  if (!movie) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Movie not found</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Get related movies (same director/artist, different movie)
-  const relatedResult = await pool.query(
-    'SELECT * FROM movies WHERE artist = $1 AND id != $2 LIMIT 3',
-    [movie.artist, id]
-  );
-  const relatedMovies = relatedResult.rows;
+  // Use placeholder data
+  const movie = getPlaceholderItem('Movie', id);
+  const relatedMovies = getPlaceholderRelated('Movie', movie.genre || 'Sample Genre', parseInt(id), 3);
 
   return (
     <div className="px-10">

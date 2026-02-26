@@ -1,40 +1,16 @@
 import { NextResponse } from 'next/server';
 
+/**
+ * Movies Migration Route
+ * 
+ * Not available in simplified mock data implementation.
+ */
 export async function POST() {
-  try {
-    if (!pool) {
-      return NextResponse.json(
-        { error: 'Database configuration error', message: 'Database connection is not available. Please set DATABASE_URL environment variable.' },
-        { status: 500 }
-      );
-    }
-    // Create movies table if it doesn't exist
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS movies (
-        id SERIAL PRIMARY KEY,
-        title VARCHAR(255) NOT NULL,
-        artist VARCHAR(255) NOT NULL,
-        image_url TEXT,
-        duration_ms INTEGER,
-        genre VARCHAR(100),
-        popularity INTEGER DEFAULT 0,
-        release_date TIMESTAMP,
-        date_added TIMESTAMP DEFAULT NOW(),
-        UNIQUE(title, artist)
-      )
-    `);
-
-    return NextResponse.json({
-      success: true,
-      message: 'Created movies table',
-    });
-  } catch (error: any) {
-    console.error('Migration error:', error);
-    return NextResponse.json(
-      { error: 'Failed to migrate movies', details: error.message },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json(
+    { 
+      error: 'Not available', 
+      message: 'Database migration is not available in the simplified mock data implementation.' 
+    },
+    { status: 501 }
+  );
 }
-
-

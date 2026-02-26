@@ -4,6 +4,7 @@ import ActionButtons from '@/components/info/ActionButtons';
 import NewsMainSection from '@/components/info/NewsMainSection';
 import NewsInformationSection from '@/components/info/NewsInformationSection';
 import RelatedNews from '@/components/info/RelatedNews';
+import { getPlaceholderItem, getPlaceholderRelated } from '@/lib/db';
 
 interface NewsPageProps {
   params: Promise<{ id: string }>;
@@ -12,36 +13,9 @@ interface NewsPageProps {
 export default async function NewsPage({ params }: NewsPageProps) {
   const { id } = await params;
   
-  if (!pool) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Database connection unavailable</p>
-        </div>
-      </div>
-    );
-  }
-
-  const result = await pool.query('SELECT * FROM news WHERE id = $1', [id]);
-  const news = result.rows[0];
-
-  if (!news) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">News source not found</p>
-        </div>
-      </div>
-    );
-  }
-
-  const relatedResult = await pool.query(
-    'SELECT * FROM news WHERE genre = $1 AND id != $2 LIMIT 3',
-    [news.genre, id]
-  );
-  const relatedNews = relatedResult.rows;
+  // Use placeholder data
+  const news = getPlaceholderItem('News', id);
+  const relatedNews = getPlaceholderRelated('News', news.genre || 'Sample Genre', parseInt(id), 3);
 
   return (
     <div className="px-10">

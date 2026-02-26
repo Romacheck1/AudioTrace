@@ -4,6 +4,7 @@ import ActionButtons from '@/components/info/ActionButtons';
 import AudiobookMainSection from '@/components/info/AudiobookMainSection';
 import AudiobookInformationSection from '@/components/info/AudiobookInformationSection';
 import RelatedAudiobooks from '@/components/info/RelatedAudiobooks';
+import { getPlaceholderItem, getPlaceholderRelated } from '@/lib/db';
 
 interface AudiobookPageProps {
   params: Promise<{ id: string }>;
@@ -12,38 +13,9 @@ interface AudiobookPageProps {
 export default async function AudiobookPage({ params }: AudiobookPageProps) {
   const { id } = await params;
   
-  if (!pool) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Database connection unavailable</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Query database directly
-  const result = await pool.query('SELECT * FROM audiobooks WHERE id = $1', [id]);
-  const audiobook = result.rows[0];
-
-  if (!audiobook) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Audiobook not found</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Get related audiobooks (same artist, different audiobook)
-  const relatedResult = await pool.query(
-    'SELECT * FROM audiobooks WHERE artist = $1 AND id != $2 LIMIT 3',
-    [audiobook.artist, id]
-  );
-  const relatedAudiobooks = relatedResult.rows;
+  // Use placeholder data
+  const audiobook = getPlaceholderItem('Audiobook', id);
+  const relatedAudiobooks = getPlaceholderRelated('Audiobook', audiobook.genre || 'Sample Genre', parseInt(id), 3);
 
   return (
     <div className="px-10">

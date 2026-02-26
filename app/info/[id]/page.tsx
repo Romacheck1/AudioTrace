@@ -4,6 +4,7 @@ import ActionButtons from '@/components/info/ActionButtons';
 import MainSection from '@/components/info/MainSection';
 import InformationSection from '@/components/info/InformationSection';
 import RelatedSongs from '@/components/info/RelatedSongs';
+import { getPlaceholderItem, getPlaceholderRelated } from '@/lib/db';
 
 interface InfoPageProps {
   params: Promise<{ id: string }>;
@@ -12,38 +13,9 @@ interface InfoPageProps {
 export default async function InfoPage({ params }: InfoPageProps) {
   const { id } = await params;
   
-  if (!pool) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Database connection unavailable</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Query database directly
-  const result = await pool.query('SELECT * FROM songs WHERE id = $1', [id]);
-  const song = result.rows[0];
-
-  if (!song) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Song not found</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Get related songs (same artist, different song)
-  const relatedResult = await pool.query(
-    'SELECT * FROM songs WHERE artist = $1 AND id != $2 LIMIT 3',
-    [song.artist, id]
-  );
-  const relatedSongs = relatedResult.rows;
+  // Use placeholder data
+  const song = getPlaceholderItem('Song', id);
+  const relatedSongs = getPlaceholderRelated('Song', song.genre || 'Sample Genre', parseInt(id), 3);
 
   return (
     <div className="px-10">

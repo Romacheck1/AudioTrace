@@ -4,6 +4,7 @@ import ActionButtons from '@/components/info/ActionButtons';
 import YoutubeMainSection from '@/components/info/YoutubeMainSection';
 import YoutubeInformationSection from '@/components/info/YoutubeInformationSection';
 import RelatedYoutubers from '@/components/info/RelatedYoutubers';
+import { getPlaceholderItem, getPlaceholderRelated } from '@/lib/db';
 
 interface YoutubePageProps {
   params: Promise<{ id: string }>;
@@ -12,38 +13,9 @@ interface YoutubePageProps {
 export default async function YoutubePage({ params }: YoutubePageProps) {
   const { id } = await params;
   
-  if (!pool) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">Database connection unavailable</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Query database directly
-  const result = await pool.query('SELECT * FROM youtube WHERE id = $1', [id]);
-  const youtuber = result.rows[0];
-
-  if (!youtuber) {
-    return (
-      <div className="px-10">
-        <Header />
-        <div className="w-[1200px] mx-auto mt-16">
-          <p className="text-gray-600">YouTuber not found</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Get related youtubers (same genre, different youtuber)
-  const relatedResult = await pool.query(
-    'SELECT * FROM youtube WHERE genre = $1 AND id != $2 LIMIT 3',
-    [youtuber.genre, id]
-  );
-  const relatedYoutubers = relatedResult.rows;
+  // Use placeholder data
+  const youtuber = getPlaceholderItem('Youtube', id);
+  const relatedYoutubers = getPlaceholderRelated('Youtube', youtuber.genre || 'Sample Genre', parseInt(id), 3);
 
   return (
     <div className="px-10">

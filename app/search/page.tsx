@@ -17,36 +17,8 @@ interface SearchPageProps {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const { q } = await searchParams;
   
-  // Fetch all data from all tables
-  const tables = [
-    'songs',
-    'podcasts',
-    'audiobooks',
-    'movies',
-    'streams',
-    'youtube',
-    'news',
-    'radio',
-    'interviews'
-  ];
-
+  // Use placeholder data for search
   const allNames: string[] = [];
-
-  if (pool) {
-    try {
-      // Query each table and collect all titles
-      for (const table of tables) {
-        const result = await pool.query(`SELECT title FROM ${table} ORDER BY title`);
-        const titles = result.rows.map((row: { title: string }) => row.title);
-        allNames.push(...titles);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-
-  // Sort all names alphabetically
-  allNames.sort();
 
   return (
     <div className="px-10">
